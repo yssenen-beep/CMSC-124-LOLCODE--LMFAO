@@ -9,6 +9,7 @@ lex_regex = {
     "TYPE": re.compile(r'(?:NUMBR|NUMBAR|YARN|TROOF|NOOB)'),
 
     # KEYWORDS
+    "AN": re.compile(r'AN'),
     "HAI": re.compile(r'HAI'),
     "KTHXBYE": re.compile(r'KTHXBYE'),
     "WAZZUP": re.compile(r'WAZZUP'),

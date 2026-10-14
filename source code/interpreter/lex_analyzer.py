@@ -3,7 +3,7 @@ import re
 
 tokens = [] # store tuple (lexeme/text extract, lexeme type)
 
-with open("test.lol", "r", encoding="utf-8") as file:
+with open("test_cases/test.lol", "r", encoding="utf-8") as file:
     content = file.read()
     index = 0 # track/point to where to start regexing from the string
     while index < len(content):
