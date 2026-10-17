@@ -43,7 +43,7 @@ class TokenType(Enum):
     ANY_OF = auto()
     ALL_OF = auto()
     BOTH_SAEM = auto()
-    DIFFREINT = auto()
+    DIFFRINT = auto()
     SMOOSH = auto()
     MAEK = auto()
     A = auto()
@@ -76,9 +76,7 @@ class TokenType(Enum):
     varident = auto()
     funcident = auto()
     loopident = auto()
-    
 
-
-print(TokenType.varident.value)
-
+    #WHITESPACE RULE
+    WHITESPACE = auto()
 
