@@ -1,9 +1,10 @@
 import re
+from lexemes import TokenType
 
 lex_regex = {
     # LITERALS
-    "NUMBAR": re.compile(r'-?[0-9]+\.[0-9]+'),
-    "NUMBR": re.compile(r'-?[0-9]+'),
+    TokenType.NUMBAR: re.compile(r'-?[0-9]+\.[0-9]+'),
+    TokenType.NUMBR: re.compile(r'-?[0-9]+'),
     "YARN": re.compile(r'".*?"'),
     "TROOF": re.compile(r'(?:WIN|FAIL)'),
     "TYPE": re.compile(r'(?:NUMBR|NUMBAR|YARN|TROOF|NOOB)'),
