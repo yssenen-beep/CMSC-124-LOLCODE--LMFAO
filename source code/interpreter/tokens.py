@@ -3,12 +3,6 @@ from enum import Enum, auto
 
 from dataclasses import dataclass
 
-@dataclass
-class Token:
-    value: str
-    type: TokenType
-
-
 class TokenType(Enum):
     #LITERALS
     NUMBAR = auto()
@@ -80,3 +74,10 @@ class TokenType(Enum):
     #WHITESPACE RULE
     WHITESPACE = auto()
 
+    #SYMBOLS
+    PLUS = auto()
+
+@dataclass
+class Token:
+    value: str
+    type: TokenType
