@@ -5,6 +5,7 @@ HAI
   I HAS A s ITZ "HI" BTW string
   x R SUM OF x AN 10
   BOTH SAEM x AN 52
+  VISIBLE "Hello " + name
   O RLY?
     YA RLY
       VISIBLE s

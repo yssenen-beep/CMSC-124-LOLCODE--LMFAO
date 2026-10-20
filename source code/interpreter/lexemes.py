@@ -63,6 +63,9 @@ lex_regex = {
     TokenType.FOUND_YR: re.compile(r'FOUND YR'),
     TokenType.I_IZ: re.compile(r'I IZ'),
     TokenType.MKAY: re.compile(r'MKAY'),
+
+    # SYMBOLS   
+    TokenType.PLUS: re.compile(r'\+'),
     
     # IDENTIFIERS
     TokenType.varident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
