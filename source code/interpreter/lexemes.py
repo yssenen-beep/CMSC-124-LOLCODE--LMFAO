@@ -17,6 +17,8 @@ lex_regex = {
     TokenType.BUHBYE: re.compile(r'BUHBYE'),
     TokenType.BTW: re.compile(r'BTW[^\r\n]*'),
     TokenType.OBTW: re.compile(r'OBTW[\s\S]*?TLDR'),
+    TokenType.TLDR: re.compile(r'TLDR'),
+    TokenType.I_HAS_A: re.compile(r'I HAS A'),
     TokenType.ITZ: re.compile(r'ITZ'),
     TokenType.R: re.compile(r'R\b'),
     TokenType.SUM_OF: re.compile(r'SUM OF'),

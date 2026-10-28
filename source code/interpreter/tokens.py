@@ -75,6 +75,8 @@ class TokenType(Enum):
 
     #SYMBOLS
     PLUS = auto()
+    
+    EOF = auto()
 
 @dataclass
 class Token:

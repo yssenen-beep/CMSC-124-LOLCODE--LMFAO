@@ -21,5 +21,5 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
         if not match:
             tokens.append(Token(value="SYNTAX ERROR", type=None))
             break
-            
+    tokens.append(Token(value="EOF", type=TokenType.EOF))
     return tokens
