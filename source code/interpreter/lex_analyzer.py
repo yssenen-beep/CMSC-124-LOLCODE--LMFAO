@@ -19,6 +19,7 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
                 break
                 
         if not match:
-            index += 1 # next if char if no match
+            tokens.append(Token(value="SYNTAX ERROR", type=None))
+            break
             
     return tokens

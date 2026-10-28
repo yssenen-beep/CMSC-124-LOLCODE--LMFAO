@@ -66,10 +66,9 @@ lex_regex = {
     TokenType.PLUS: re.compile(r'\+'),
     
     # IDENTIFIERS
-    TokenType.varident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
-    TokenType.funcident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
-    TokenType.loopident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
+    TokenType.IDENTIFIER: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
 
     # WHITESPACE RULE
+    TokenType.LINEBREAK: re.compile(r'[\n]+'),
     TokenType.WHITESPACE: re.compile(r'[\s,]+'), 
 }
