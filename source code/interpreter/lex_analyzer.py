@@ -10,7 +10,7 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
         match = None
         for token_type, regex in lex_regex.items(): # grep all possible lexeme types
             match = regex.match(content, index)
-            if match:
+            if match and match.end() > index:
                 lex = match.group(0)
                 index = match.end() # go to end of the match and start reading the text after the match                
                 if token_type == TokenType.WHITESPACE: # if whitespace go next

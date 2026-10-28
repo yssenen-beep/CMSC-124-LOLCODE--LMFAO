@@ -68,7 +68,7 @@ class ourGUI(QWidget):
         self.setLayout(mainLO)
 
     def open_le_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open le File", "", "All vos Files")    
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open le File", "", "All vos Files (*)")    
         if file_path:
             self.fileName.setText(file_path)
             with open(file_path, "r", encoding="utf-8") as chosenFile:
