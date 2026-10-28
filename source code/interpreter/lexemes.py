@@ -1,5 +1,5 @@
 import re
-from tokens import *
+from interpreter.tokens import *
 
 lex_regex = {
     # LITERALS
