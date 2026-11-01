@@ -5,12 +5,23 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.ptr = 0
+        print(tokens)
+        self.remove_comments()
+
+    def remove_comments(self):
+        filtered_tokens = []
+        for token in self.tokens:
+            if token.type not in (TokenType.BTW, TokenType.OBTW):
+                filtered_tokens.append(token)
+
+        self.tokens = filtered_tokens
     
     def is_not_eof(self):
         if self.tokens[self.ptr].type != TokenType.EOF:
             return True
         else:
             return False
+
     @property
     def current_token(self):
         if self.is_not_eof():
@@ -59,8 +70,13 @@ class Parser:
     
     def parse_declarations(self):
         declarations = []
+
+        while self.current_token:
+            #Check if there is comments in function declartion
+
+            if self.current_token.type != TokenType.I_HAS_A:
+                break
         
-        while self.current_token and self.current_token.type == TokenType.I_HAS_A:
             dec = self.parse_declaration()
             declarations.append(dec)
             
@@ -81,3 +97,5 @@ class Parser:
     def parse_expr(self):
         self.ptr += 1
         return("EXPRESSION", 67) # testing lang po
+
+

@@ -16,7 +16,7 @@ lex_regex = {
     TokenType.WAZZUP: re.compile(r'WAZZUP'),
     TokenType.BUHBYE: re.compile(r'BUHBYE'),
     TokenType.BTW: re.compile(r'BTW[^\r\n]*'),
-    TokenType.OBTW: re.compile(r'OBTW[\s\S]*?TLDR'),
+    TokenType.OBTW: re.compile(r'OBTW[\s\S]*?TLDR\n'),
     TokenType.TLDR: re.compile(r'TLDR'),
     TokenType.I_HAS_A: re.compile(r'I HAS A'),
     TokenType.ITZ: re.compile(r'ITZ'),
