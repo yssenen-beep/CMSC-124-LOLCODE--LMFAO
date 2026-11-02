@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QFileDialog, QLabel, QHeaderView
 )
 from PyQt6.QtCore import Qt
-
+from pprint import pprint
 from interpreter.tokens import Token, TokenType
 from interpreter.lex_analyzer import lex_le_analyzer # import lex analyzer
 from interpreter.parser import Parser
@@ -87,7 +87,7 @@ class ourGUI(QWidget):
         tokens = lex_le_analyzer(content) # run ts on analyzer
         parser = Parser(tokens)
         test = parser.parse_program()
-        print(json.dumps(test, indent=4))
+        pprint(test)
 
         for token in tokens:
             if token.type == TokenType.LINEBREAK:

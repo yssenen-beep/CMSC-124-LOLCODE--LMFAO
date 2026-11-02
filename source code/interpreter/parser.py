@@ -1,11 +1,11 @@
 from interpreter.tokens import Token, TokenType
 from interpreter.lexemes import lex_regex
+from interpreter.ast_nodes import ASTNode, ASTType
 
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.ptr = 0
-        print(tokens)
         self.remove_comments()
 
     #Before we parse any program we remove all comments from the system
@@ -44,19 +44,17 @@ class Parser:
         var_ast = self.parse_var_section()
         
         self.match(TokenType.KTHXBYE)
-        return {
-            "type": "PROGRAM_ROOT",
-            "variable_block": var_ast,
-        }
+        return ASTNode(
+            type=ASTType.PROGRAM,
+            children=[var_ast]
+        )
     
     def parse_var_section(self):
         # epsilon case
         if not self.current_token or self.current_token.type != TokenType.WAZZUP:
-            return {
-                "type": "VARIABLE_SECTION",
-                "declarations": []  # Empty section block
-            }
-            
+            return ASTNode(
+                type=ASTType.VARIABLE_SECTION
+            )
         self.match(TokenType.WAZZUP)
         self.match(TokenType.LINEBREAK)
         declarations_list = self.parse_declarations()
@@ -64,10 +62,10 @@ class Parser:
         self.match(TokenType.BUHBYE)
         self.match(TokenType.LINEBREAK)
         
-        return {
-            "type": "VARIABLE_SECTION",
-            "declarations": declarations_list
-        }
+        return ASTNode(
+            type=ASTType.VARIABLE_SECTION,
+            children=declarations_list
+        )
     
     def parse_declarations(self):
         declarations = []
@@ -91,9 +89,16 @@ class Parser:
         if self.current_token and self.current_token.type == TokenType.ITZ:
             self.match(TokenType.ITZ)
             expr_dec = self.parse_expr()
-            return("DECLARATION_WITH_INIT", ident.value, expr_dec)
+            return ASTNode(
+                type=ASTType.DECLARATION,
+                value=ident.value,
+                children=[expr_dec]
+            )
             
-        return("DECLARATION", ident.value)
+        return ASTNode(
+            type=ASTType.DECLARATION,
+            value=ident.value
+        )
     
     def parse_expr(self):
         self.ptr += 1

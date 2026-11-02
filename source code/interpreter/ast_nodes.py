@@ -1,7 +1,6 @@
-from dataclasses import dataclasses
-from typing import optional
-
+from dataclasses import dataclass
 from enum import Enum, auto
+from typing import Optional
 
 class ASTType(Enum):
 
@@ -48,7 +47,7 @@ class ASTType(Enum):
 @dataclass
 class ASTNode:
     type: ASTType
-    value: object
-    children: list
+    value: Optional[object] = None
+    children: Optional[list] = None
 
 
