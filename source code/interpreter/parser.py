@@ -8,6 +8,7 @@ class Parser:
         print(tokens)
         self.remove_comments()
 
+    #Before we parse any program we remove all comments from the system
     def remove_comments(self):
         filtered_tokens = []
         for token in self.tokens:
