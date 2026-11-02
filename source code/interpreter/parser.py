@@ -17,6 +17,15 @@ ARITHMETIC_TYPES = {
     TokenType.MOD_OF
 }
 
+BOOLEAN_TYPES = {
+    TokenType.BOTH_OF,
+    TokenType.EITHER_OF,
+    TokenType.WON_OF,
+    TokenType.NOT,
+    TokenType.ALL_OF,
+    TokenType.ANY_OF
+}
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -154,19 +163,48 @@ class Parser:
                 children=value
             )
 
-        """
+        #Parse Boolean operations
         elif token.type in BOOLEAN_TYPES:
-            value = self.parse_boolean_expr()
+            if(token.type == TokenType.ALL_OF or token.type == TokenType.ANY_OF):
+                value = self.parse_boolean_expr_all_any()
+            elif(token.type == TokenType.NOT):
+                value = self.parse_expr()
+            else:
+                value = self.parse_boolean_expr()
             return ASTNode(
-                type=ASTType.BOOLEAN,
+                type=ASTType.BOOLEAN_EXPRESSION,
                 value=token.type,
                 children=value
             )
-        """
         raise SyntaxError(f"Invalid expression: {token}")
- 
-    #def parse_boolean_expr(self):
-        
+    
+    #Parses the rest of the boolean expressions
+    def parse_boolean_expr(self):
+         # Parse left operand
+        left = self.parse_expr()
+
+        # CONSUME the An
+        self.match(TokenType.AN)
+
+        # Parse right operand
+        right = self.parse_expr()
+        return [left, right]
+    
+    #Parses the infinity arity stuff
+    def parse_boolean_expr_all_any(self):
+        operands = []
+
+        # Parse first operand
+        operands.append(self.parse_expr())
+
+        # Parse remaining operands
+        while self.current_token and self.current_token.type == TokenType.AN:
+            self.match(TokenType.AN)
+            operands.append(self.parse_expr())
+
+        # Consume MKAY
+        self.match(TokenType.MKAY)
+        return operands
 
     def parse_concatenation_expr(self):
         #Get the currrent token
@@ -194,6 +232,7 @@ class Parser:
         right = self.parse_expr()
 
         return [left, right]
+
 """
 SUM OF <x> AN <y>             BTW + (add)
 DIFF OF <x> AN <y>            BTW - (subtract)
