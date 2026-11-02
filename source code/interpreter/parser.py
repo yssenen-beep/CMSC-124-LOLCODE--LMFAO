@@ -14,7 +14,9 @@ ARITHMETIC_TYPES = {
     TokenType.DIFF_OF,
     TokenType.PRODUKT_OF,
     TokenType.QUOSHUNT_OF,
-    TokenType.MOD_OF
+    TokenType.MOD_OF,
+    TokenType.BIGGR_OF,
+    TokenType.SMALLR_OF
 }
 
 BOOLEAN_TYPES = {
@@ -176,8 +178,26 @@ class Parser:
                 value=token.type,
                 children=value
             )
+        
+        #Parse comprison operation
+        elif token.type in [TokenType.BOTH_SAEM, TokenType.DIFFRINT]:
+            value = self.parse_comparison_expr()
+            return ASTNode(
+                type=ASTType.COMPARISON,
+                value=token.type,
+                children=value
+            )
         raise SyntaxError(f"Invalid expression: {token}")
-    
+   
+    def parse_comparison_expr(self):
+        left = self.parse_expr()
+
+        self.match(TokenType.AN)
+
+        right = self.parse_expr()
+
+        return [left, right]
+        
     #Parses the rest of the boolean expressions
     def parse_boolean_expr(self):
          # Parse left operand
@@ -232,14 +252,4 @@ class Parser:
         right = self.parse_expr()
 
         return [left, right]
-
-"""
-SUM OF <x> AN <y>             BTW + (add)
-DIFF OF <x> AN <y>            BTW - (subtract)
-PRODUKT OF <x> AN <y>         BTW * (multiply)
-QUOSHUNT OF <x> AN <y>        BTW / (divide)
-MOD OF <x> AN <y>             BTW % (modulo)
-BIGGR OF <x> AN <y>           BTW max
-SMALLR OF <x> AN <y>  
-"""
 

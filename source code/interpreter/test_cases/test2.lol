@@ -4,6 +4,8 @@ HAI
     I HAS A b ITZ NOT x
     I HAS A c ITZ BOTH OF x AN y
     I HAS A y ITZ SUM OF 1 AN 2
+    I HAS A brain ITZ BOTH SAEM x AN BIGGR OF x AN y
+    I HAS A mouth ITZ DIFFRINT x AN y
     I HAS A word ITZ SMOOSH "Hello" AN "200" AN "500"
     OBTW Something Something
     hello_world
