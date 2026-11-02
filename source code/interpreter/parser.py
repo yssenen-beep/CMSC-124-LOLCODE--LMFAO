@@ -124,28 +124,78 @@ class Parser:
 
     def parse_expr(self):
         token = self.current_token
+        self.ptr += 1
 
         if not token:
             raise SyntaxError("Unexpected end of input")
-
+        
+        #Parses literal types into AST nodes
         if token.type in LITERAL_TYPES:
-            self.ptr += 1
             return ASTNode(
                 type=ASTType.LITERAL,
                 value=token.value
             )
+
+        #Parses variables
         elif token.type == TokenType.IDENTIFIER:
-            self.ptr += 1
             return ASTNode(
                 type=ASTType.IDENTIFIER,
                 value=token.value
             )
-        """
+
+        #Parses Arthmetic Expressions
         elif token.type in ARITHMETIC_TYPES:
-            value = self.parse_arthmetic_expr()
-        """
+            value = self.parse_arithmetic_expr()
+            return ASTNode(
+                type=ASTType.ARITHMETIC,
+                value=token.type,
+                children=value
+            )
+        
+        #Parses CONCATENATION expression
+        elif token.type == TokenType.SMOOSH:
+            value = self.parse_concatenation_expr()
+            return ASTNode(
+                type=ASTType.CONCATENATION,
+                value=token.type,
+                children=value
+            )
+        elif token.type in BOOLEAN_TYPES:
+            value = self.parse_boolean_expr()
+            return ASTNode(
+                type=ASTType.BOOLEAN,
+                value=token.type,
+                children=value
+            )
+
         raise SyntaxError(f"Invalid expression: {token}")
 
+    def parse_concatenation_expr(self):
+        #Get the currrent token
+        token = self.current_token
+        self.ptr += 1
+
+        #Check if the next token is a linebreak if so return base case
+        if (self.current_token.type == TokenType.LINEBREAK):
+            return token
+
+        #consume AN
+        self.match(TokenType.AN) 
+
+        #Call parse parse_concatenation_expr
+        return [token, self.parse_concatenation_expr()]
+
+    def parse_arithmetic_expr(self):
+        # Parse left operand
+        left = self.parse_expr()
+
+        # Expect AN
+        self.match(TokenType.AN)
+
+        # Parse right operand
+        right = self.parse_expr()
+
+        return [left, right]
 """
 SUM OF <x> AN <y>             BTW + (add)
 DIFF OF <x> AN <y>            BTW - (subtract)
