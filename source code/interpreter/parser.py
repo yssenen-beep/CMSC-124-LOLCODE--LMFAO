@@ -17,13 +17,6 @@ ARITHMETIC_TYPES = {
     TokenType.MOD_OF
 }
 
-BOOLEAN_TYPES = {
-    TokenType.BOTH_OF,
-    TokenType.EITHER_OF,
-    TokenType.WON_OF,
-    TokenType.NOT
-}
-
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -160,6 +153,8 @@ class Parser:
                 value=token.type,
                 children=value
             )
+
+        """
         elif token.type in BOOLEAN_TYPES:
             value = self.parse_boolean_expr()
             return ASTNode(
@@ -167,8 +162,11 @@ class Parser:
                 value=token.type,
                 children=value
             )
-
+        """
         raise SyntaxError(f"Invalid expression: {token}")
+ 
+    #def parse_boolean_expr(self):
+        
 
     def parse_concatenation_expr(self):
         #Get the currrent token
@@ -189,7 +187,7 @@ class Parser:
         # Parse left operand
         left = self.parse_expr()
 
-        # Expect AN
+        # CONSUME the An
         self.match(TokenType.AN)
 
         # Parse right operand
