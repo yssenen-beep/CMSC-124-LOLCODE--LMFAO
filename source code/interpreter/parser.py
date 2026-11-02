@@ -2,6 +2,28 @@ from interpreter.tokens import Token, TokenType
 from interpreter.lexemes import lex_regex
 from interpreter.ast_nodes import ASTNode, ASTType
 
+LITERAL_TYPES = {
+    TokenType.NUMBR,
+    TokenType.NUMBAR,
+    TokenType.YARN,
+    TokenType.TROOF
+}
+
+ARITHMETIC_TYPES = {
+    TokenType.SUM_OF,
+    TokenType.DIFF_OF,
+    TokenType.PRODUKT_OF,
+    TokenType.QUOSHUNT_OF,
+    TokenType.MOD_OF
+}
+
+BOOLEAN_TYPES = {
+    TokenType.BOTH_OF,
+    TokenType.EITHER_OF,
+    TokenType.WON_OF,
+    TokenType.NOT
+}
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -99,9 +121,38 @@ class Parser:
             type=ASTType.DECLARATION,
             value=ident.value
         )
-    
-    def parse_expr(self):
-        self.ptr += 1
-        return("EXPRESSION", 67) # testing lang po
 
+    def parse_expr(self):
+        token = self.current_token
+
+        if not token:
+            raise SyntaxError("Unexpected end of input")
+
+        if token.type in LITERAL_TYPES:
+            self.ptr += 1
+            return ASTNode(
+                type=ASTType.LITERAL,
+                value=token.value
+            )
+        elif token.type == TokenType.IDENTIFIER:
+            self.ptr += 1
+            return ASTNode(
+                type=ASTType.IDENTIFIER,
+                value=token.value
+            )
+        """
+        elif token.type in ARITHMETIC_TYPES:
+            value = self.parse_arthmetic_expr()
+        """
+        raise SyntaxError(f"Invalid expression: {token}")
+
+"""
+SUM OF <x> AN <y>             BTW + (add)
+DIFF OF <x> AN <y>            BTW - (subtract)
+PRODUKT OF <x> AN <y>         BTW * (multiply)
+QUOSHUNT OF <x> AN <y>        BTW / (divide)
+MOD OF <x> AN <y>             BTW % (modulo)
+BIGGR OF <x> AN <y>           BTW max
+SMALLR OF <x> AN <y>  
+"""
 

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Optional
 
@@ -47,7 +47,5 @@ class ASTType(Enum):
 @dataclass
 class ASTNode:
     type: ASTType
-    value: Optional[object] = None
-    children: Optional[list] = None
-
-
+    value: object = None
+    children: list["ASTNode"] = field(default_factory=list)
