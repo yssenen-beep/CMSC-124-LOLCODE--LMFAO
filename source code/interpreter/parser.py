@@ -260,7 +260,31 @@ class Parser:
                 value=token.type,
                 children=value
             )
+
+        elif token.type == TokenType.MAEK:
+            value = self.parse_maek_expr()
+            return ASTNode(
+                type=ASTType.TYPECAST,
+                value=token.type,
+                children=value
+            )
         raise SyntaxError(f"Invalid expression: {token}")
+
+    def parse_maek_expr(self):
+        # operand being cast (any expression)
+        operand = self.parse_expr()
+
+        # optional "A"
+        if self.current_token and self.current_token.type == TokenType.A:
+            self.match(TokenType.A)
+
+        # target type
+        type_token = self.match(TokenType.TYPE)
+
+        return [
+            operand,
+            ASTNode(type=ASTType.LITERAL, value=type_token.value)
+        ]
    
     def parse_comparison_expr(self):
         left = self.parse_expr()
