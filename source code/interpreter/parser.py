@@ -119,9 +119,11 @@ class Parser:
             )
 
         elif token.type == TokenType.GIMMEH:
-            return ASTNODE(
+            value = self.current_token
+            self.ptr += 1
+            return ASTNode(
                 type=ASTType.INPUT,
-                value=token.value
+                value=value
             )
 
         raise SyntaxError(f"Invalid expression: {token}")
