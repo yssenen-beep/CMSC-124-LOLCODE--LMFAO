@@ -37,6 +37,8 @@ class ASTType(Enum):
     CASE = auto()
     DEFAULT_CASE = auto()
     LOOP = auto()
+    LOOP_OP = auto()
+    LOOP_CONDITION = auto()
 
     # Functions
     FUNCTION_DECLARATION = auto()
