@@ -10,7 +10,7 @@ lex_regex = {
     TokenType.TYPE: re.compile(r'(?:NUMBR|NUMBAR|YARN|TROOF|NOOB)'),
 
     # KEYWORDS
-    TokenType.AN: re.compile(r'AN'),
+    TokenType.AN: re.compile(r'AN\b'),
     TokenType.HAI: re.compile(r'HAI'),
     TokenType.KTHXBYE: re.compile(r'KTHXBYE'),
     TokenType.WAZZUP: re.compile(r'WAZZUP'),

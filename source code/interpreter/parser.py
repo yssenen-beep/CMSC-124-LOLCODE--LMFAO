@@ -98,6 +98,7 @@ class Parser:
 
             new_statement = self.parse_statement()
             statements.append(new_statement)
+            print(new_statement)
             
             self.match(TokenType.LINEBREAK)
 
@@ -124,6 +125,15 @@ class Parser:
             return ASTNode(
                 type=ASTType.INPUT,
                 value=value
+            )
+
+        elif token.type == TokenType.IDENTIFIER:
+            self.match(TokenType.R)
+            value = self.parse_expr()
+            return ASTNode(
+                type=ASTType.ASSIGNMENT,
+                value=token.value,
+                children=[value]
             )
 
         raise SyntaxError(f"Invalid expression: {token}")
@@ -231,7 +241,7 @@ class Parser:
             if(token.type == TokenType.ALL_OF or token.type == TokenType.ANY_OF):
                 value = self.parse_boolean_expr_all_any()
             elif(token.type == TokenType.NOT):
-                value = self.parse_expr()
+                value = [self.parse_expr()]
             else:
                 value = self.parse_boolean_expr()
             return ASTNode(
