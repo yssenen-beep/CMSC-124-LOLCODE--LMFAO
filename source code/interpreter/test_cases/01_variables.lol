@@ -1,4 +1,3 @@
-BTW start of the program
 HAI
     WAZZUP
         BTW variable dec

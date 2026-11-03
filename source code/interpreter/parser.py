@@ -36,12 +36,24 @@ class Parser:
 
     #Before we parse any program we remove all comments from the system
     def remove_comments(self):
-        filtered_tokens = []
+        filtered = []
+        skipping = False
         for token in self.tokens:
-            if token.type not in (TokenType.BTW, TokenType.OBTW):
-                filtered_tokens.append(token)
+            if token.type == TokenType.BTW:
+                skipping = True
+                continue
+            if skipping:
+                if token.type == TokenType.LINEBREAK:
+                    skipping = False
+                else:
+                    continue
 
-        self.tokens = filtered_tokens
+            if token.type == TokenType.LINEBREAK:
+                if not filtered or filtered[-1].type == TokenType.LINEBREAK:
+                    continue
+
+            filtered.append(token)
+        self.tokens = filtered
     
     def is_not_eof(self):
         if self.tokens[self.ptr].type != TokenType.EOF:
@@ -68,12 +80,61 @@ class Parser:
         self.match(TokenType.LINEBREAK)
         
         var_ast = self.parse_var_section()
-        
+        code_ast = self.parse_code_section()
+
         self.match(TokenType.KTHXBYE)
+        
         return ASTNode(
             type=ASTType.PROGRAM,
-            children=[var_ast]
+            children=[var_ast, code_ast]
         )
+
+        
+    def parse_code_section(self):
+        statements = []
+        while self.current_token:
+            if self.current_token.type == TokenType.KTHXBYE:
+                break
+
+            new_statement = self.parse_statement()
+            statements.append(new_statement)
+            
+            self.match(TokenType.LINEBREAK)
+
+        return statements
+
+    def parse_statement(self):
+        token = self.current_token
+        self.ptr += 1
+
+        if not token:
+            raise SyntaxError("Unexpected end of input")
+
+        if token.type == TokenType.VISIBLE:
+            value = self.parse_print()
+            return ASTNode(
+                type=ASTType.PRINT,
+                value=token.type,
+                children = value
+            )
+
+        elif token.type == TokenType.GIMMEH:
+            return ASTNODE(
+                type=ASTType.INPUT,
+                value=token.value
+            )
+
+        raise SyntaxError(f"Invalid expression: {token}")
+
+    def parse_print(self):
+        operands = [self.parse_expr()]
+
+        while self.current_token and self.current_token.type == TokenType.PLUS:
+            self.match(TokenType.PLUS)
+            operands.append(self.parse_expr())
+
+        return operands
+
     
     def parse_var_section(self):
         # epsilon case
@@ -97,8 +158,6 @@ class Parser:
         declarations = []
 
         while self.current_token:
-            #Check if there is comments in function declartion
-
             if self.current_token.type != TokenType.I_HAS_A:
                 break
         
