@@ -1,14 +1,11 @@
 HAI
-  OBTW multi
-  line TLDR
-  I HAS A x ITZ 42 BTW integer
-  I HAS A s ITZ "HI" BTW string
-  x R SUM OF x AN 10
-  BOTH SAEM x AN 52
-  VISIBLE "Hello " + name
-  O RLY?
-    YA RLY
-      VISIBLE s
-  OIC
+  WAZZUP
+    I HAS A x BTW hello_world
+    I HAS A y ITZ SUM OF 1 AN 2
+    I HAS A word ITZ SMOOSH "Hello" AN "200" AN "500"
+    OBTW Something Something
+    hello_world
+    TLDR
+  BUHBYE
 KTHXBYE
 

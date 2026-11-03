@@ -4,8 +4,11 @@ from PyQt6.QtWidgets import (
     QPushButton, QFileDialog, QLabel, QHeaderView
 )
 from PyQt6.QtCore import Qt
-
+from pprint import pprint
+from interpreter.tokens import Token, TokenType
 from interpreter.lex_analyzer import lex_le_analyzer # import lex analyzer
+from interpreter.parser import Parser
+import json
 
 class ourGUI(QWidget):
     def __init__(self):
@@ -82,8 +85,13 @@ class ourGUI(QWidget):
 
         content = self.textEdit.toPlainText() # get text from text editor
         tokens = lex_le_analyzer(content) # run ts on analyzer
+        parser = Parser(tokens)
+        test = parser.parse_program()
+        pprint(test)
 
         for token in tokens:
+            if token.type == TokenType.LINEBREAK:
+                continue
             row = self.lexemeT.rowCount() # check current row
             self.lexemeT.insertRow(row) # add new row
             self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns

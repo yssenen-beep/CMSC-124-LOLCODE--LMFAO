@@ -16,7 +16,9 @@ lex_regex = {
     TokenType.WAZZUP: re.compile(r'WAZZUP'),
     TokenType.BUHBYE: re.compile(r'BUHBYE'),
     TokenType.BTW: re.compile(r'BTW[^\r\n]*'),
-    TokenType.OBTW: re.compile(r'OBTW[\s\S]*?TLDR'),
+    TokenType.OBTW: re.compile(r'OBTW[\s\S]*?TLDR\n'),
+    TokenType.TLDR: re.compile(r'TLDR'),
+    TokenType.I_HAS_A: re.compile(r'I HAS A'),
     TokenType.ITZ: re.compile(r'ITZ'),
     TokenType.R: re.compile(r'R\b'),
     TokenType.SUM_OF: re.compile(r'SUM OF'),
@@ -66,10 +68,9 @@ lex_regex = {
     TokenType.PLUS: re.compile(r'\+'),
     
     # IDENTIFIERS
-    TokenType.varident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
-    TokenType.funcident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
-    TokenType.loopident: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
+    TokenType.IDENTIFIER: re.compile(r'[a-zA-Z][a-zA-Z0-9_]*'),
 
     # WHITESPACE RULE
+    TokenType.LINEBREAK: re.compile(r'[\n]+'),
     TokenType.WHITESPACE: re.compile(r'[\s,]+'), 
 }

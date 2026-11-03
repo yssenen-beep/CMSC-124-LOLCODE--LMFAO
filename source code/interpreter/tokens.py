@@ -67,15 +67,16 @@ class TokenType(Enum):
     MKAY = auto()
 
     #IDENTIFIERS
-    varident = auto()
-    funcident = auto()
-    loopident = auto()
+    IDENTIFIER= auto()
 
     #WHITESPACE RULE
+    LINEBREAK = auto()
     WHITESPACE = auto()
 
     #SYMBOLS
     PLUS = auto()
+    
+    EOF = auto()
 
 @dataclass
 class Token:
