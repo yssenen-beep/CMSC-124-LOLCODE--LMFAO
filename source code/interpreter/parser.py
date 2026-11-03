@@ -34,19 +34,11 @@ class Parser:
         self.ptr = 0
         self.remove_comments()
 
-    #Before we parse any program we remove all comments from the system
     def remove_comments(self):
         filtered = []
-        skipping = False
         for token in self.tokens:
-            if token.type == TokenType.BTW:
-                skipping = True
+            if token.type in (TokenType.BTW, TokenType.OBTW):
                 continue
-            if skipping:
-                if token.type == TokenType.LINEBREAK:
-                    skipping = False
-                else:
-                    continue
 
             if token.type == TokenType.LINEBREAK:
                 if not filtered or filtered[-1].type == TokenType.LINEBREAK:
@@ -128,13 +120,23 @@ class Parser:
             )
 
         elif token.type == TokenType.IDENTIFIER:
-            self.match(TokenType.R)
-            value = self.parse_expr()
-            return ASTNode(
-                type=ASTType.ASSIGNMENT,
-                value=token.value,
-                children=[value]
-            )
+            if self.current_token and self.current_token.type == TokenType.R:
+                self.match(TokenType.R)
+                expr = self.parse_expr()
+                return ASTNode(
+                    type=ASTType.ASSIGNMENT,
+                    value=token.value,
+                    children=[expr]
+                )
+
+            elif self.current_token and self.current_token.type == TokenType.IS_NOW_A:
+                self.match(TokenType.IS_NOW_A)
+                type_token = self.match(TokenType.TYPE)
+                return ASTNode(
+                    type=ASTType.TYPECAST,
+                    value=token.value,
+                    children=[ASTNode(type=ASTType.LITERAL, value=type_token.value)]
+                )
 
         raise SyntaxError(f"Invalid expression: {token}")
 
