@@ -156,12 +156,17 @@ class Parser:
                     is_if_else = True
                 break
             lookahead_ptr += 1
-            
-        # look ahead 2 tokens to check if next statement is an o_rly
+
+        #For if else
         if is_if_else:
             condition = self.parse_expr()
             return self.parse_if_else_block(condition)
-    
+
+        #For reading bare expressions
+        if self.current_token and self.current_token.type != TokenType.LINEBREAK:
+            expr = self.parse_expr()
+            return ASTNode(type=ASTType.EXPRESSION, children=[expr])
+
 
         raise SyntaxError(f"Invalid expression: {token}, {self.tokens[self.ptr+1]}")
 
@@ -272,8 +277,9 @@ class Parser:
             statements.append(self.parse_statement())
             self.match(TokenType.LINEBREAK)
                 
-        self.match(TokenType.LINEBREAK)
-            
+        if self.current_token and self.current_token.type == TokenType.LINEBREAK:
+            self.match(TokenType.LINEBREAK)
+
         self.match(TokenType.IF_U_SAY_SO)
         
         statements_node = ASTNode(
@@ -627,6 +633,26 @@ class Parser:
                 value=token.type,
                 children=value
             )
+        
+        #Parse function calls
+        elif token.type == TokenType.I_IZ:
+            ident = self.match(TokenType.IDENTIFIER)
+            args = []
+            if self.current_token and self.current_token.type == TokenType.YR:
+                self.match(TokenType.YR)
+                args.append(self.parse_expr())
+                while self.current_token and self.current_token.type == TokenType.AN:
+                    self.match(TokenType.AN)
+                    self.match(TokenType.YR)
+                    args.append(self.parse_expr())
+            if self.current_token and self.current_token.type == TokenType.MKAY:
+                self.match(TokenType.MKAY)      # MKAY is optional in your tests
+            return ASTNode(
+                type=ASTType.FUNCTION_CALL,
+                value=ident.value,
+                children=args
+            )
+
         raise SyntaxError(f"Invalid expression: {token}")
 
     #Function helper

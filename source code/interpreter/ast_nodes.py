@@ -28,6 +28,7 @@ class ASTType(Enum):
     BOOLEAN_EXPRESSION = auto()
     CONCATENATION = auto()
     TYPECAST = auto()
+    EXPRESSION = auto()
 
     # Control Flow
     IF_ELSE = auto()
