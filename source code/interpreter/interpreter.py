@@ -134,7 +134,7 @@ class Interpreter:
     # Reads a line of input from the console, 
     # and assigns it to the variable of the GIMMEH statement.
     def eval_input(self, node, table):
-        text = self.input()
+        text = self.input(node.value)
         table.set_variable(node.value, MK_YARN(text))
         return None
     #------------------------------------------------

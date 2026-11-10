@@ -88,29 +88,33 @@ class ourGUI(QWidget):
         self.terminal.clear()
 
         content = self.textEdit.toPlainText() # get text from text editor
-        tokens = lex_le_analyzer(content) # run ts on analyzer
-        parser = Parser(tokens)
-        test = parser.parse_program()
-        pprint(test)
-
-        for token in tokens:
-            if token.type == TokenType.LINEBREAK:
-                continue
-            row = self.lexemeT.rowCount() # check current row
-            self.lexemeT.insertRow(row) # add new row
-            self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns
-            self.lexemeT.setItem(row, 1, QTableWidgetItem(token.type.name))
         
         interpreter = Interpreter(self.write_output, self.ask_input)
-        interpreter.run(test)
+        try:
+            tokens = lex_le_analyzer(content) # run ts on analyzer
+            parser = Parser(tokens)
+            test = parser.parse_program()
+            pprint(test)
+
+            for token in tokens:
+                if token.type == TokenType.LINEBREAK:
+                    continue
+                row = self.lexemeT.rowCount() # check current row
+                self.lexemeT.insertRow(row) # add new row
+                self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns
+                self.lexemeT.setItem(row, 1, QTableWidgetItem(token.type.name))
+
+            interpreter.run(test)
+        except Exception as e:
+            self.write_output("Error: " + str(e) + "\n")
         self.show_symbol_table(interpreter.symbol_table)   
    
     def write_output(self, text):
         self.terminal.moveCursor(QTextCursor.MoveOperation.End)
         self.terminal.insertPlainText(text)
     
-    def ask_input(self):
-        text, ok = QInputDialog.getText(self, "GIMMEH", "Enter a value:")
+    def ask_input(self, variable_name):
+        text, ok = QInputDialog.getText(self, "GIMMEH", f"Enter a value for {variable_name}:")
         self.write_output(text + "\n")
         return text
     
