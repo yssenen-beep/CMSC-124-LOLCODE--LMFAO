@@ -40,6 +40,8 @@ class Parser:
             if token.type in (TokenType.BTW, TokenType.OBTW):
                 continue
 
+            # to do: check multilines too(!)
+
             if token.type == TokenType.LINEBREAK:
                 if not filtered or filtered[-1].type == TokenType.LINEBREAK:
                     continue
@@ -74,7 +76,13 @@ class Parser:
         self.match(TokenType.LINEBREAK)
         
         var_ast = self.parse_var_section()
-        code_ast = self.parse_code_section()
+        code_stm = self.parse_code_section()
+
+        # Made the list of statements into ASTNode struc
+        code_ast = ASTNode(
+            type=ASTType.STATEMENT_BLOCK,
+            children=code_stm
+        )
 
         self.match(TokenType.KTHXBYE)
         
@@ -239,20 +247,6 @@ class Parser:
         return ASTNode(
             type=ASTType.FUNCTION_SECTION,
             children=functions
-        )
-        
-        while self.current_token and self.current_token.type not in (TokenType.IF_U_SAY_SO, TokenType.FOUND_YR):
-            statements.append(self.parse_statement())
-            self.match(TokenType.LINEBREAK)
-                
-        return_node = self.parse_return()
-        
-        self.match(TokenType.IF_U_SAY_SO)
-        
-        return ASTNode(
-            type=ASTType.FUNCTION_DECLARATION,
-            value=ident.value,
-            children=params + statements + ([return_node] if return_node else [])
         )
     
     def parse_func_dec(self):
@@ -658,6 +652,8 @@ class Parser:
     #Function helper
     def parse_maek_expr(self):
         operand = self.parse_expr()
+        if self.current_token and self.current_token.type == TokenType.A: # added optional A
+            self.match(TokenType.A)
         type_token = self.match(TokenType.TYPE)
         return [
             operand,
