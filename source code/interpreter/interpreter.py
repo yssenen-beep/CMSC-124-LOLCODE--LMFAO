@@ -16,6 +16,8 @@ class Interpreter:
         return self.symbol_table
 
     def evaluate(self, node, symbol_table):
+        if node == None: # if empty
+            return None
         
         # Program structure
         if node.type == ASTType.PROGRAM:
@@ -30,6 +32,8 @@ class Interpreter:
             return self.eval_declaration(node, symbol_table)
         elif node.type == ASTType.ASSIGNMENT:
             return self.eval_assignment(node, symbol_table)
+        elif node.type == ASTType.TYPECAST: # typecasting
+            return self.eval_typecast(node, symbol_table)
 
         # Statements
         elif node.type == ASTType.STATEMENT_BLOCK:
@@ -38,6 +42,11 @@ class Interpreter:
             return self.eval_print(node, symbol_table)
         elif node.type == ASTType.INPUT:
             return self.eval_input(node, symbol_table)
+        elif node.type == ASTType.EXPRESSION: # added expressions
+            val = self.evaluate(node.children[0], symbol_table)
+            if val:
+                symbol_table.set_it(val)
+            return val
         
         # Expressions
         elif node.type == ASTType.LITERAL:
@@ -46,6 +55,21 @@ class Interpreter:
             return self.eval_identifier(node, symbol_table)
         elif node.type == ASTType.ARITHMETIC:
             return self.eval_arithmetic(node, symbol_table)
+        # added more expressions
+        elif node.type == ASTType.CONCATENATION:
+            return self.eval_concatenation(node, symbol_table)
+        elif node.type == ASTType.BOOLEAN_EXPRESSION:
+            return self.eval_boolean(node, symbol_table)
+        elif node.type == ASTType.COMPARISON:
+            return self.eval_comparison(node, symbol_table)
+
+        # control flow
+        elif node.type == ASTType.IF_ELSE:
+            return self.eval_if_else(node, symbol_table)
+        elif node.type == ASTType.SWITCH_CASE:
+            return self.eval_switch_case(node, symbol_table)
+        elif node.type == ASTType.LOOP:
+            return self.eval_loop(node, symbol_table)
 
         else:
             raise Exception(f"Unknown AST node type: {node.type}")
@@ -64,7 +88,7 @@ class Interpreter:
         self.evaluate(function_section, symbol_table)      
         self.evaluate(variable_section, symbol_table)    
 
-        result = self.eval_statements(main_statements, symbol_table)
+        self.eval_statements(main_statements.children, symbol_table) # point to children list
 
         return None
     
@@ -95,12 +119,26 @@ class Interpreter:
     def eval_assignment(self, node, table):
         value = self.evaluate(node.children[0], table)
         table.set_variable(node.value, value)
+        table.set_it(value) # set it
         return None
     
-    def eval_recast(self, node, table):
-        return None
-
-
+    def eval_typecast(self, node, table): # typecasting AND recasting
+        # MAEK <expr> A <type>
+        if len(node.children) == 2:
+            val = self.evaluate(node.children[0], table)
+            type = node.children[1].value
+            res = typecast.cast(val, type)
+            table.set_it(res)
+            return res
+        # <IDENTIFIER> IS NOW A <type>
+        else:
+            var_name = node.value
+            type = node.children[0].value
+            var_val = table.get_variable(var_name)
+            var_val2 = typecast.cast(var_val, type)
+            table.set_variable(var_name, var_val2)
+            table.set_it(var_val2)
+            return None
 
     #------------------------------------------------
     # STATEMENTS SECTION 
@@ -134,8 +172,10 @@ class Interpreter:
     # Reads a line of input from the console, 
     # and assigns it to the variable of the GIMMEH statement.
     def eval_input(self, node, table):
-        text = self.input()
-        table.set_variable(node.value, MK_YARN(text))
+        text = self.input(node.value)
+        val = MK_YARN(text)
+        table.set_variable(node.value, val)
+        table.set_it(val) # set it
         return None
     #------------------------------------------------
     # EXPRESSIONS SECTION 
@@ -210,5 +250,45 @@ class Interpreter:
         # If both operands evaluate to a NUMBR, the result of the operation is a NUMBR.
         # If at least one operand is a NUMBAR, the result of the operation is a NUMBAR.
         if both_numbr:
-            return MK_NUMBR(result)
-        return MK_NUMBAR(result)
+            res_val = MK_NUMBR(result)
+        else:
+            res_val = MK_NUMBAR(result)
+
+        table.set_it(res_val)
+        return res_val
+
+    # new evaluations
+    # compares left and right
+    def eval_comparison(self, node, table):
+        left = self.evaluate(node.children[0], table)
+        right = self.evaluate(node.children[1], table)
+        op = node.value
+
+        if op == TokenType.BOTH_SAEM:
+            res = (left.value == right.value)
+        elif op == TokenType.DIFFRINT:
+            res = (left.value != right.value)
+        else:
+            res = False
+
+        res_val = MK_TROOF(res)
+        table.set_it(res_val)
+        return res_val
+
+    def eval_boolean(self, node, table):
+        return None
+
+    def eval_concatenation(self, node, table):
+        return None
+
+    # ------------------------------------------------
+    # CONTROL FLOW SECTION
+    # ------------------------------------------------
+    def eval_if_else(self, node, table):
+        return None
+
+    def eval_switch_case(self, node, table):
+       return None
+
+    def eval_loop(self, node, table):
+        return None
