@@ -26,3 +26,4 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
 
 def validate_multilines(line_tokens):
     # check if OBTW and TLDR in their own lines (!)
+    return None

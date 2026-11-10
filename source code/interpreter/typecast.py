@@ -85,9 +85,8 @@ def to_yarn(value, explicit=False):
     # Casting NUMBARs to YARN will truncate the decimal portion up
     # to two decimal places.
     elif value.type == "NUMBAR":
-        text = f"{value.value:.10f}"
-        dot = text.index(".")
-        return MK_YARN(text[:dot + 3])
+        text = f"{value.value:.2f}" # straight to .2f no more slicing
+        return MK_YARN(text)
 
     elif value.type == "TROOF":
         if value.value == True:
