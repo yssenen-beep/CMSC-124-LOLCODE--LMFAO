@@ -23,3 +23,6 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
             break
     tokens.append(Token(value="EOF", type=TokenType.EOF))
     return tokens
+
+def validate_multilines(line_tokens):
+    # check if OBTW and TLDR in their own lines (!)
