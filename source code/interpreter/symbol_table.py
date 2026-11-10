@@ -29,3 +29,20 @@ class SymbolTable:
 
     def set_it(self, value):
         self.variables["IT"] = value
+
+    # For GUI, returns a list of tuples containing variable names and their values.
+    def get_rows(self):
+        rows = []
+        for name in self.variables:
+            value = self.variables[name]
+            if value.type == "NOOB":
+                shown = "NOOB"
+            elif value.type == "TROOF":
+                if value.value == True:
+                    shown = "WIN"
+                else:
+                    shown = "FAIL"
+            else:
+                shown = str(value.value)
+            rows.append((name, shown))
+        return rows

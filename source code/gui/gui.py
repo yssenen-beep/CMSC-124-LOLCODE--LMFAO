@@ -1,13 +1,16 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
     QPlainTextEdit, QTableWidget, QTableWidgetItem,
-    QPushButton, QFileDialog, QLabel, QHeaderView
+    QPushButton, QFileDialog, QLabel, QHeaderView,
+    QInputDialog   
 )
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QTextCursor                  
 from pprint import pprint
 from interpreter.tokens import Token, TokenType
 from interpreter.lex_analyzer import lex_le_analyzer # import lex analyzer
 from interpreter.parser import Parser
+from interpreter.interpreter import Interpreter
 import json
 
 class ourGUI(QWidget):
@@ -80,7 +83,8 @@ class ourGUI(QWidget):
 
     def lexemeh_analysis(self):
 
-        self.lexemeT.setRowCount(0) # reset lexeme table and terminal
+        self.lexemeT.setRowCount(0) # reset lexeme table,symbol table and terminal
+        self.symbolT.setRowCount(0)
         self.terminal.clear()
 
         content = self.textEdit.toPlainText() # get text from text editor
@@ -96,3 +100,24 @@ class ourGUI(QWidget):
             self.lexemeT.insertRow(row) # add new row
             self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns
             self.lexemeT.setItem(row, 1, QTableWidgetItem(token.type.name))
+        
+        interpreter = Interpreter(self.write_output, self.ask_input)
+        interpreter.run(test)
+        self.show_symbol_table(interpreter.symbol_table)   
+   
+    def write_output(self, text):
+        self.terminal.moveCursor(QTextCursor.MoveOperation.End)
+        self.terminal.insertPlainText(text)
+    
+    def ask_input(self):
+        text, ok = QInputDialog.getText(self, "GIMMEH", "Enter a value:")
+        self.write_output(text + "\n")
+        return text
+    
+    def show_symbol_table(self, table):
+        self.symbolT.setRowCount(0) 
+        for name, shown in table.get_rows():
+            row = self.symbolT.rowCount() 
+            self.symbolT.insertRow(row) 
+            self.symbolT.setItem(row, 0, QTableWidgetItem(name)) 
+            self.symbolT.setItem(row, 1, QTableWidgetItem(shown))
