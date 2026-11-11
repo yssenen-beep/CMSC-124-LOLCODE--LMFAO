@@ -66,6 +66,10 @@ class Interpreter:
         # control flow
         elif node.type == ASTType.IF_ELSE:
             return self.eval_if_else(node, symbol_table)
+        elif node.type == ASTType.ELSE_IF:
+            return self.eval_else_if(node, symbol_table)
+        elif node.type == ASTType.ELSE:
+            return self.eval_else(node, symbol_table)
         elif node.type == ASTType.SWITCH_CASE:
             return self.eval_switch_case(node, symbol_table)
         elif node.type == ASTType.LOOP:
@@ -322,9 +326,47 @@ class Interpreter:
     # ------------------------------------------------
     # CONTROL FLOW SECTION
     # ------------------------------------------------
-    def eval_if_else(self, node, table):
-        return None
 
+    # IF-THEN STATEMENTS
+    def eval_if_else(self, node, table):
+        # node.children is [condition, YA RLY block, optional ELSE_IF or ELSE]
+        condition_expr = node.children[0]
+        ya_rly_block = node.children[1]
+        
+        # the condition expression's result is stored in IT
+        value = self.evaluate(condition_expr, table)
+        table.set_it(value)
+
+        # If the IT variable can be cast to WIN, the if-clause executes. Otherwise, the else-clause executes.
+        if typecast.to_troof(value).value == True:
+            return self.eval_block(ya_rly_block, table)
+
+        # If the if-clause is not executed, and there is an else-clause, it executes the else-clause or else-if clause.
+        if len(node.children) == 3:
+            return self.evaluate(node.children[2], table)
+
+        return None
+    
+    # MEBBE
+    def eval_else_if(self, node, table):
+        condition_expr = node.children[0]
+        block = node.children[1]
+
+        value = self.evaluate(condition_expr, table)
+
+        if typecast.to_troof(value).value == True:
+            return self.eval_block(block, table)
+
+        if len(node.children) == 3:
+            return self.evaluate(node.children[2], table)
+
+        return None
+    
+    # NO WAI
+    def eval_else(self, node, table):
+        # node.children is [block]
+        return self.eval_block(node.children[0], table)
+    
     def eval_switch_case(self, node, table):
        return None
 
