@@ -273,9 +273,16 @@ class Interpreter:
 
     def eval_boolean(self, node, table):
         return None
-
+    
+    # SMOOSH a AN b AN c
+    # If the operand evaluates to another data type, they are implicitly typecast 
+    # to YARNs when given to SMOOSH
     def eval_concatenation(self, node, table):
-        return None
+        text = ""
+        for child in node.children:
+            value = self.evaluate(child, table)
+            text = text + typecast.to_yarn(value).value
+        return MK_YARN(text)
 
     # ------------------------------------------------
     # CONTROL FLOW SECTION

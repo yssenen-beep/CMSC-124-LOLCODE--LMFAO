@@ -120,6 +120,11 @@ class ourGUI(QWidget):
                 # None -> NOOB
                 if var_val.type == "NOOB":
                     val_display = "NOOB"
+                elif var_val.type == "TROOF":
+                    if var_val.value == True:
+                        val_display = "WIN"
+                    else:
+                        val_display = "FAIL"
                 else:
                     val_display = str(var_val.value)
                 
