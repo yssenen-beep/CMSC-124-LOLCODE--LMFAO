@@ -88,12 +88,23 @@ class ourGUI(QWidget):
         self.terminal.clear() # and terminal
 
         content = self.textEdit.toPlainText() # get text from text editor
-        tokens = lex_le_analyzer(content) # run ts on analyzer
+        
+        try:
+            tokens = lex_le_analyzer(content) # run ts on analyzer
+        except Exception as e:
+            self.terminal.appendPlainText(f"[Lexical Error]: {str(e)}")
+            return
 
         # lexical analyzing part
         for token in tokens:
             if token.type == TokenType.LINEBREAK:
                 continue
+
+            if token.type == None: # this shouldnt happen
+                type_name = "ERR"
+            else:
+                type_name = token.type.name
+
             row = self.lexemeT.rowCount() # check current row
             self.lexemeT.insertRow(row) # add new row
             self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns
@@ -117,9 +128,14 @@ class ourGUI(QWidget):
                 row = self.symbolT.rowCount() # check current row
                 self.symbolT.insertRow(row) # add new row
                 
-                # None -> NOOB
+                # None -> NOOB True -> WIN False -> FAIL
                 if var_val.type == "NOOB":
                     val_display = "NOOB"
+                elif var_val.type == "TROOF":
+                    if var_val.value == True:
+                        val_display = "WIN"
+                    else:
+                        val_display = "FAIL"
                 else:
                     val_display = str(var_val.value)
                 
@@ -136,5 +152,5 @@ class ourGUI(QWidget):
             return ""
 
     def outpute(self, text): # output in le terminal
-        self.terminal.moveCursor(self.terminal.textCursor().MoveOperation.End)
+        self.terminal.moveCursor(QTextCursor.MoveOperation.End)
         self.terminal.insertPlainText(text)
