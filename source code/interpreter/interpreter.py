@@ -134,6 +134,7 @@ class Interpreter:
     def eval_assignment(self, node, table):
         value = self.evaluate(node.children[0], table)
         table.set_variable(node.value, value)
+        table.set_it(value)
         return None
     
     def eval_typecast(self, node, table): # typecasting AND recasting
@@ -142,6 +143,7 @@ class Interpreter:
             val = self.evaluate(node.children[0], table)
             type = node.children[1].value
             res = typecast.cast(val, type)
+            table.set_it(res)
             return res
         # <IDENTIFIER> IS NOW A <type> (recasting)
         else:
@@ -150,6 +152,7 @@ class Interpreter:
             var_val = table.get_variable(var_name)
             var_val2 = typecast.cast(var_val, type)
             table.set_variable(var_name, var_val2)
+            table.set_it(var_val2)
             return None
 
     #------------------------------------------------
@@ -189,6 +192,7 @@ class Interpreter:
         text = self.input(node.value)
         val = MK_YARN(text)
         table.set_variable(node.value, val)
+        table.set_it(val)
         return None
     #------------------------------------------------
     # EXPRESSIONS SECTION 
@@ -266,6 +270,7 @@ class Interpreter:
             res_val = MK_NUMBR(result)
         else:
             res_val = MK_NUMBAR(result)
+        table.set_it(res_val)
         return res_val
 
     # more evaluations
@@ -283,6 +288,7 @@ class Interpreter:
             res = False
 
         res_val = MK_TROOF(res)
+        table.set_it(res_val)
         return res_val
 
      # BOTH OF, EITHER OF, WON OF, NOT, ALL OF, ANY OF
@@ -318,6 +324,7 @@ class Interpreter:
             result = False
 
         res_val = MK_TROOF(result)
+        table.set_it(res_val)
         return res_val
 
     # SMOOSH a AN b AN c
@@ -330,6 +337,7 @@ class Interpreter:
             text = text + typecast.to_yarn(value, True).value
 
         res_val = MK_YARN(text)
+        table.set_it(res_val)
         return res_val
 
     # ------------------------------------------------
@@ -344,6 +352,7 @@ class Interpreter:
 
         # the condition expression's result is stored in IT
         value = self.evaluate(condition_expr, table)
+        table.set_it(res_val)
 
         # If the IT variable can be cast to WIN, the if-clause executes. Otherwise, the else-clause executes.
         if typecast.to_troof(value).value == True:
