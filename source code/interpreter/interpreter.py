@@ -74,7 +74,9 @@ class Interpreter:
         else:
             raise Exception(f"Unknown AST node type: {node.type}")
 
-        
+
+#implicit variable IT should only be set when there is a bare expression.
+
     #------------------------------------------------
     #PROGRAM STRUCTURE SECTION 
     #------------------------------------------------
@@ -119,7 +121,6 @@ class Interpreter:
     def eval_assignment(self, node, table):
         value = self.evaluate(node.children[0], table)
         table.set_variable(node.value, value)
-        table.set_it(value) # set it
         return None
     
     def eval_typecast(self, node, table): # typecasting AND recasting
@@ -128,7 +129,6 @@ class Interpreter:
             val = self.evaluate(node.children[0], table)
             type = node.children[1].value
             res = typecast.cast(val, type)
-            table.set_it(res)
             return res
         # <IDENTIFIER> IS NOW A <type>
         else:
@@ -137,7 +137,6 @@ class Interpreter:
             var_val = table.get_variable(var_name)
             var_val2 = typecast.cast(var_val, type)
             table.set_variable(var_name, var_val2)
-            table.set_it(var_val2)
             return None
 
     #------------------------------------------------
@@ -175,7 +174,6 @@ class Interpreter:
         text = self.input(node.value)
         val = MK_YARN(text)
         table.set_variable(node.value, val)
-        table.set_it(val) # set it
         return None
     #------------------------------------------------
     # EXPRESSIONS SECTION 
@@ -254,7 +252,6 @@ class Interpreter:
         else:
             res_val = MK_NUMBAR(result)
 
-        table.set_it(res_val)
         return res_val
 
     # new evaluations
@@ -272,7 +269,6 @@ class Interpreter:
             res = False
 
         res_val = MK_TROOF(res)
-        table.set_it(res_val)
         return res_val
 
     def eval_boolean(self, node, table):
