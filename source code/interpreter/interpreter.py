@@ -271,8 +271,43 @@ class Interpreter:
         res_val = MK_TROOF(res)
         return res_val
 
+    # BOTH OF, EITHER OF, WON OF, NOT, ALL OF, ANY OF
+    # If the operands are not TROOFs, they should be implicitly typecast
     def eval_boolean(self, node, table):
-        return None
+
+        # Turn every operand into a TROOF and store them into a list
+        values = []
+        for child in node.children:
+            value = self.evaluate(child, table)
+            values.append(typecast.to_troof(value).value)
+
+        op = node.value
+
+        # NOT(1 operand)
+        if op == TokenType.NOT:
+            result = not values[0]
+
+        # BOTH OF(2 operands), EITHER OF(2 operands), WON OF(2 operands)
+        elif op == TokenType.BOTH_OF:          
+            result = values[0] and values[1]
+        elif op == TokenType.EITHER_OF:        
+            result = values[0] or values[1]
+        elif op == TokenType.WON_OF:           
+            result = values[0] != values[1]
+
+        # ALL OF(infinite operands), ANY OF(infinite operands)
+        elif op == TokenType.ALL_OF:         
+            result = True
+            for v in values:
+                if v == False:
+                    result = False
+        else:                                  
+            result = False
+            for v in values:
+                if v == True:
+                    result = True
+
+        return MK_TROOF(result)
     
     # SMOOSH a AN b AN c
     # If the operand evaluates to another data type, they are implicitly typecast 

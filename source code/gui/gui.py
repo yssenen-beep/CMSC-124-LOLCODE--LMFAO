@@ -117,7 +117,7 @@ class ourGUI(QWidget):
                 row = self.symbolT.rowCount() # check current row
                 self.symbolT.insertRow(row) # add new row
                 
-                # None -> NOOB
+                # None -> NOOB True -> WIN False -> FAIL
                 if var_val.type == "NOOB":
                     val_display = "NOOB"
                 elif var_val.type == "TROOF":
