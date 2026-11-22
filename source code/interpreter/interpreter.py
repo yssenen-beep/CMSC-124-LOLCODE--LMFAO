@@ -166,7 +166,7 @@ class Interpreter:
         for statement in statements:
             result = self.evaluate(statement, table)
             if result == "GTFO" or result == "RETURN": # terminates loop/switch
-                return "GTFO"
+                return result
         return None
     
     # VISIBLE a + b + c + ... :
@@ -334,7 +334,7 @@ class Interpreter:
         text = ""
         for child in node.children:
             value = self.evaluate(child, table)
-            text = text + typecast.to_yarn(value, True).value
+            text = text + typecast.to_yarn(value).value
 
         res_val = MK_YARN(text)
         table.set_it(res_val)
@@ -352,7 +352,7 @@ class Interpreter:
 
         # the condition expression's result is stored in IT
         value = self.evaluate(condition_expr, table)
-        table.set_it(res_val)
+        table.set_it(value)
 
         # If the IT variable can be cast to WIN, the if-clause executes. Otherwise, the else-clause executes.
         if typecast.to_troof(value).value == True:
