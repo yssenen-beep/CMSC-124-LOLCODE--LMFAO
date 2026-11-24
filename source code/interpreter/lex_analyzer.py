@@ -30,7 +30,7 @@ def lex_le_analyzer(content: str): # upd: made to dynamically handle every conte
                 break
         # no match, so it is unknown text
         if foundmatch == False:
-            error = True
+            raise SyntaxError(f"Invalid expression: {content[index]} is not a keyword")
 
     if error == True:
         tokens.append(Token(value="SYNTAX ERROR", type=None))
