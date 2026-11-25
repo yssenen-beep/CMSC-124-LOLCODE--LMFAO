@@ -16,12 +16,14 @@ O RLY?
         IM IN YR ascending UPPIN YR i WILE BOTH SAEM i AN SMALLR OF i AN 3
             VISIBLE i
         IM OUTTA YR ascending
-    NO WAI
+    MEBBE BOTH SAEM choice AN "2"
         VISIBLE "Counting downwards:"
         i R 3
         IM IN YR descending NERFIN YR i WILE BOTH SAEM i AN BIGGR OF i AN 1
             VISIBLE i
         IM OUTTA YR descending
+    NO WAI
+        VISIBLE "Invalid Choice"
 OIC
 
 KTHXBYE

@@ -7,13 +7,13 @@ BUHBYE
 
 GIMMEH num
 
-BOTH SAEM num AN 0
+BOTH SAEM num AN "0"
 O RLY?
     YA RLY
         VISIBLE "Zero"
-    MEBBE BOTH SAEM num AN 1
+    MEBBE BOTH SAEM num AN "1"
         VISIBLE "One"
-    MEBBE BOTH SAEM num AN 2
+    MEBBE BOTH SAEM num AN "2"
         VISIBLE "Two"
     NO WAI
         VISIBLE "Other number"
@@ -25,8 +25,10 @@ O RLY?
         O RLY?
             YA RLY
                 VISIBLE "You chose YES"
-            NO WAI
+            MEBBE BOTH SAEM choice AN "N"
                 VISIBLE "You chose NO"
+            NO WAI
+                VISIBLE "Other Input"
         OIC
 OIC
 

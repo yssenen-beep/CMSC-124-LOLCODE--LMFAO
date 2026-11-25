@@ -8,8 +8,9 @@ BUHBYE
 
 VISIBLE "Enter age: "
 GIMMEH age
+age IS NOW A NUMBAR
 
-BOTH SAEM age AN "18"
+BOTH SAEM age AN BIGGR OF age AN 18
 O RLY?
     YA RLY
         VISIBLE "Age requirement satisfied"
