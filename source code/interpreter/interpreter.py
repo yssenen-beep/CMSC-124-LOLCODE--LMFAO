@@ -469,6 +469,13 @@ class Interpreter:
 
         function = self.functions[func_name]
         params = function.children[:-1] # all param nodes
+        # check arity
+        if len(node.children) != len(params):
+            raise TypeError(
+                f"Function '{func_name}' expected {len(params)} argument(s), "
+                f"got {len(node.children)}"
+            )
+            
         code_block = function.children[-1] # code block
 
         # each call, own symbol table
