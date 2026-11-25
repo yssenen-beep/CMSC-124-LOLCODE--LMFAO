@@ -152,7 +152,6 @@ class ourGUI(QWidget):
             result.append(text)
             loop.quit()
 
-        self.outpute(f"Enter a value for {var_name}: ")
         self.terminal.inputSubmitted.connect(on_submit)
         self.runBtn.setEnabled(False)   
         self.terminal.begin_input()
