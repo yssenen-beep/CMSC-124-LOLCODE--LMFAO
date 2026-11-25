@@ -40,8 +40,6 @@ class Parser:
             if token.type in (TokenType.BTW, TokenType.OBTW):
                 continue
 
-            # to do: check multilines too(!)
-
             if token.type == TokenType.LINEBREAK:
                 if not filtered or filtered[-1].type == TokenType.LINEBREAK:
                     continue
