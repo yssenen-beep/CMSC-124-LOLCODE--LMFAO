@@ -147,9 +147,17 @@ CMSC-124-LOLCODE--LMFAO/
 │
 ├── source code/
 │   ├── interpreter/
+│   │   ├── test_cases/
+│   │   ├── ast_nodes.py
+│   │   ├── grammars.py
+│   │   ├── interpreter.py
+│   │   ├── lex_analyzer.py
+│   │   ├── lexemes.py
 │   │   ├── parser.py
+│   │   ├── symbol_table.py
 │   │   ├── tokens.py
-│   │   └── lexemes.py
+│   │   ├── typecast.py
+│   │   └── values.py
 │   │
 │   └── gui/
 │       └── gui.py
@@ -159,14 +167,10 @@ CMSC-124-LOLCODE--LMFAO/
 └── ...
 ```
 
-Additional modules and files may be added as development progresses.
-
 ## Requirements
 
 - Python 3.x
-- [List external dependencies here]
-
-For the complete list of dependencies, refer to the project's dependency file, if provided.
+- PyQt6
 
 ## Installation
 
