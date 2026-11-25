@@ -108,7 +108,7 @@ class ourGUI(QWidget):
             row = self.lexemeT.rowCount() # check current row
             self.lexemeT.insertRow(row) # add new row
             self.lexemeT.setItem(row, 0, QTableWidgetItem(token.value)) # set columns
-            self.lexemeT.setItem(row, 1, QTableWidgetItem(token.type.name))
+            self.lexemeT.setItem(row, 1, QTableWidgetItem(token.type.classification))
 
         # syntax analyzing part
         try:

@@ -477,10 +477,17 @@ class Interpreter:
         func_name = node.value
 
         if func_name not in self.functions:
-            return MK_NOOB()
+            raise NameError(f"Undefined function: {func_name}")
 
         function = self.functions[func_name]
         params = function.children[:-1] # all param nodes
+        # check arity
+        if len(node.children) != len(params):
+            raise TypeError(
+                f"Function '{func_name}' expected {len(params)} argument(s), "
+                f"got {len(node.children)}"
+            )
+            
         code_block = function.children[-1] # code block
 
         # each call, own symbol table
@@ -493,12 +500,18 @@ class Interpreter:
             ltable.declare_variable(params[i].value, val)
 
         result = self.eval_block(code_block, ltable)
-
         if result == "GTFO":
-            return MK_NOOB()
+            # no return value
+            ret_val = MK_NOOB()
+        else:
+            # update local table
+            ret_val = ltable.get_it() or MK_NOOB()
+        
+        # set parent table it to the return value
+        table.set_it(ret_val)
+        
+        return ret_val
 
-        # FOUND YR (or no return at all) leaves the answer in IT
-        return ltable.get_it()
 
     # Evaluates return statements(FOUND YR)
     def eval_return(self, node, table):
