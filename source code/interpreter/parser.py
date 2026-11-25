@@ -670,6 +670,10 @@ class Parser:
             self.match(TokenType.AN)
             operands.append(self.parse_expr())
 
+        for operand in operands: # no more nested all ofs and any ofs
+            if operand.type == ASTType.BOOLEAN_EXPRESSION and operand.value in (TokenType.ALL_OF, TokenType.ANY_OF):
+                raise SyntaxError("Nested ALL_OF and ANY_OF is prohibited lels")
+
         # Consume MKAY
         self.match(TokenType.MKAY)
         return operands
