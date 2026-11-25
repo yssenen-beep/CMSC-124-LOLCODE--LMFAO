@@ -4,8 +4,8 @@ from PyQt6.QtWidgets import (
     QPushButton, QFileDialog, QLabel, QHeaderView,
     QInputDialog
 )
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QTextCursor # handles output(appends at end)
+from PyQt6.QtCore import Qt, QEventLoop, pyqtSignal
+from PyQt6.QtGui import QTextCursor
 from pprint import pprint
 from interpreter.tokens import Token, TokenType
 from interpreter.lex_analyzer import lex_le_analyzer # import lex analyzer
@@ -64,7 +64,7 @@ class ourGUI(QWidget):
         self.runBtn = QPushButton("RUN") # run button
         self.runBtn.clicked.connect(self.lexemeh_analysis)
 
-        self.terminal = QPlainTextEdit() # output terminal
+        self.terminal = Terminal() # output terminal
         self.terminal.setReadOnly(True) # can't type tho
 
         mainLO.addLayout(topLO) # add ts
@@ -144,13 +144,66 @@ class ourGUI(QWidget):
         except Exception as e: # separate errors
             self.terminal.appendPlainText(f"[Semantic Error]: {str(e)}")
 
-    def inpute(self, var_name): # input in le terminal
-        text, ok = QInputDialog.getText(self, "GIMMEH", f"Enter a value for {var_name}:") 
-        if ok:
-            return text
-        else:
-            return ""
+    def inpute(self, var_name):
+        loop = QEventLoop()
+        result = []
+
+        def on_submit(text):
+            result.append(text)
+            loop.quit()
+
+        self.outpute(f"Enter a value for {var_name}: ")
+        self.terminal.inputSubmitted.connect(on_submit)
+        self.runBtn.setEnabled(False)   
+        self.terminal.begin_input()
+        loop.exec()
+        self.terminal.inputSubmitted.disconnect(on_submit)
+        self.runBtn.setEnabled(True)
+
+        return result[0] if result else ""
 
     def outpute(self, text): # output in le terminal
         self.terminal.moveCursor(QTextCursor.MoveOperation.End)
         self.terminal.insertPlainText(text)
+
+class Terminal(QPlainTextEdit):
+    inputSubmitted = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.setReadOnly(True)
+        self.waiting = False
+        self.input_start = 0
+
+    def begin_input(self):
+        self.moveCursor(QTextCursor.MoveOperation.End)
+        self.input_start = self.textCursor().position()  # protect everything before this
+        self.waiting = True
+        self.setReadOnly(False)
+        self.setFocus()
+
+    def keyPressEvent(self, event):
+        if not self.waiting:
+            return
+
+        cursor = self.textCursor()
+        key = event.key()
+
+        if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            self.moveCursor(QTextCursor.MoveOperation.End)
+            text = self.toPlainText()[self.input_start:]
+            self.insertPlainText("\n")
+            self.waiting = False
+            self.setReadOnly(True)
+            self.inputSubmitted.emit(text)
+            return
+
+        # don't let the user erase or edit the program's output
+        if key == Qt.Key.Key_Backspace and cursor.position() <= self.input_start:
+            return
+        if key == Qt.Key.Key_Delete and cursor.position() < self.input_start:
+            return
+        if cursor.position() < self.input_start or cursor.anchor() < self.input_start:
+            self.moveCursor(QTextCursor.MoveOperation.End)
+
+        super().keyPressEvent(event)
