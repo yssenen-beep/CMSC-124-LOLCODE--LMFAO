@@ -456,7 +456,7 @@ class Interpreter:
             else:
                 new = curr.value - 1
 
-            if cur_val.type == "NUMBAR": # doesnt always turn NUMBR anymore
+            if curr.type == "NUMBAR": # doesnt always turn NUMBR anymore
                 table.set_variable(var_name, MK_NUMBAR(new))
             else:
                 table.set_variable(var_name, MK_NUMBR(new))
@@ -469,6 +469,11 @@ class Interpreter:
     # Appends function definition ASTnodes
     def eval_func_decl(self, node, table):
         func_name = node.value
+
+        # Function names should be unique
+        if func_name in self.functions:
+            raise Exception(f"Function '{func_name}' is already defined.")
+
         self.functions[func_name] = node
         return None
 
