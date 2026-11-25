@@ -103,8 +103,11 @@ class Interpreter:
         self.evaluate(function_section, symbol_table)      
         self.evaluate(variable_section, symbol_table)    
 
-        self.eval_statements(main_statements.children, symbol_table) # point to children list
-
+        result = self.eval_statements(main_statements.children, symbol_table) # point to children list
+        if result == "GTFO": # gtfo n found yr cant be alone no more
+            raise Exception("GTFO need loop or switch or function")
+        if result == "RETURN":
+            raise Exception("FOUND YR need function")
         return None
     
     def eval_function_section(self, node, table):
@@ -270,7 +273,7 @@ class Interpreter:
             res_val = MK_NUMBR(result)
         else:
             res_val = MK_NUMBAR(result)
-        table.set_it(res_val)
+
         return res_val
 
     # more evaluations
@@ -280,15 +283,21 @@ class Interpreter:
         right = self.evaluate(node.children[1], table)
         op = node.value
 
+        numeric = ("NUMBR", "NUMBAR") # no auto typecast here
+        if left.type in numeric and right.type in numeric:
+            same = (left.value == right.value)
+        else:
+            same = (left.type == right.type and left.value == right.value)
+
         if op == TokenType.BOTH_SAEM:
-            res = (left.value == right.value)
+            res = same
         elif op == TokenType.DIFFRINT:
-            res = (left.value != right.value)
+            res = not same
         else:
             res = False
 
         res_val = MK_TROOF(res)
-        table.set_it(res_val)
+
         return res_val
 
      # BOTH OF, EITHER OF, WON OF, NOT, ALL OF, ANY OF
@@ -324,7 +333,7 @@ class Interpreter:
             result = False
 
         res_val = MK_TROOF(result)
-        table.set_it(res_val)
+
         return res_val
 
     # SMOOSH a AN b AN c
@@ -337,7 +346,7 @@ class Interpreter:
             text = text + typecast.to_yarn(value).value
 
         res_val = MK_YARN(text)
-        table.set_it(res_val)
+
         return res_val
 
     # ------------------------------------------------
@@ -441,13 +450,16 @@ class Interpreter:
             if result == "RETURN": # connecting returns
                 return "RETURN"
 
-            curr = typecast.to_numeric(table.get_variable(var_name)).value
+            curr = typecast.to_numeric(table.get_variable(var_name))
             if UN_type == TokenType.UPPIN:
-                new = curr + 1
+                new = curr.value + 1
             else:
-                new = curr - 1
+                new = curr.value - 1
 
-            table.set_variable(var_name, MK_NUMBR(new))
+            if cur_val.type == "NUMBAR": # doesnt always turn NUMBR anymore
+                table.set_variable(var_name, MK_NUMBAR(new))
+            else:
+                table.set_variable(var_name, MK_NUMBR(new))
 
         return None
 
