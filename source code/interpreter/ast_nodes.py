@@ -47,6 +47,51 @@ class ASTType(Enum):
     PARAMETER = auto()
     RETURN = auto()
 
+NODE_CLASSIFICATIONS = {
+    # Program structure
+    "PROGRAM": "Represents the entire program block",
+    "VARIABLE_SECTION": "Holds variable declarations",
+    "FUNCTION_SECTION": "Holds function declarations",
+
+    # Variables
+    "DECLARATION": "Declares a variable to the symbol table",
+    "ASSIGNMENT": "Assigns a value to a variable",
+    "RECAST": "Recasts a variable to a different type",
+
+    # Statements
+    "STATEMENT_BLOCK": "Holds a sequence of statements",
+    "PRINT": "Outputs one or more expressions to the console",
+    "INPUT": "Reads user input from terminal into a variable",
+    "GTFO": "Breaks out of a loop, switch-case, or function",
+
+    # Expressions
+    "LITERAL": "A datatype basically",
+    "IDENTIFIER": "A reference to a variable by name",
+    "ARITHMETIC": "Performs an arithmetic operation on two operands",
+    "COMPARISON": "Compares two operands and yields a TROOF",
+    "BOOLEAN_EXPRESSION": "Performs a boolean operation and output TROOF",
+    "CONCATENATION": "Joins multiple operands into one YARN",
+    "TYPECAST": "Converts an expression to a different type",
+    "EXPRESSION": "A generic expression wrapper node",
+
+    # Control flow
+    "IF_ELSE": "Conditional block (O RLY? YA RLY ... NO WAI ... OIC)",
+    "ELSE_IF": "Additional conditional branch (MEBBE)",
+    "ELSE": "Fallback branch when the condition is false (NO WAI)",
+    "SWITCH_CASE": "Multi-way branch on the value of IT (WTF? ... OIC)",
+    "CASE": "A single case in a switch-case (OMG)",
+    "DEFAULT_CASE": "Fallback case in a switch-case (OMGWTF)",
+    "LOOP": "Loop block (IM IN YR ... IM OUTTA YR)",
+    "LOOP_OP": "Loop update operation",
+    "LOOP_CONDITION": "Loop continuation condition",
+
+    # Functions
+    "FUNCTION_DECLARATION": "Defines a function",
+    "FUNCTION_CALL": "Calls a function (I IZ)",
+    "PARAMETER": "A named parameter of a function (YR)",
+    "RETURN": "Returns a value from a function (FOUND YR)",
+}
+
 @dataclass
 class ASTNode:
     type: ASTType
