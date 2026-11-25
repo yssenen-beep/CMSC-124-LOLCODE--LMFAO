@@ -40,6 +40,8 @@ class Parser:
             if token.type in (TokenType.BTW, TokenType.OBTW):
                 continue
 
+            # to do: check multilines too(!)
+
             if token.type == TokenType.LINEBREAK:
                 if not filtered or filtered[-1].type == TokenType.LINEBREAK:
                     continue
@@ -69,12 +71,17 @@ class Parser:
     
     def parse_program(self):
         func_ast = self.parse_func_section()
-        
         self.match(TokenType.HAI)
         self.match(TokenType.LINEBREAK)
         
         var_ast = self.parse_var_section()
-        code_ast = self.parse_code_section()
+        code_stm = self.parse_code_section()
+
+        # Made the list of statements into ASTNode struc
+        code_ast = ASTNode(
+            type=ASTType.STATEMENT_BLOCK,
+            children=code_stm
+        )
 
         self.match(TokenType.KTHXBYE)
         
@@ -114,8 +121,7 @@ class Parser:
 
         elif token.type == TokenType.GIMMEH:
             self.ptr += 1
-            value = self.current_token
-            self.ptr += 1
+            value = self.match(TokenType.IDENTIFIER) # check the input
             return ASTNode(
                 type=ASTType.INPUT,
                 value=value.value
@@ -141,6 +147,18 @@ class Parser:
                     children=[ASTNode(type=ASTType.LITERAL, value=type_token.value)]
                 )
             self.ptr-=1
+
+        elif token.type == TokenType.GTFO: # added GTFO
+            self.ptr += 1
+            return ASTNode(
+                type=ASTType.GTFO, 
+                value=token.type
+            )
+
+        elif token.type == TokenType.FOUND_YR: # added FOUND_YR
+            self.ptr += 1
+            expr = self.parse_expr()
+            return ASTNode(type=ASTType.RETURN, value=expr)
             
         elif token.type == TokenType.IM_IN_YR:
             return self.parse_loop()
@@ -240,20 +258,6 @@ class Parser:
             type=ASTType.FUNCTION_SECTION,
             children=functions
         )
-        
-        while self.current_token and self.current_token.type not in (TokenType.IF_U_SAY_SO, TokenType.FOUND_YR):
-            statements.append(self.parse_statement())
-            self.match(TokenType.LINEBREAK)
-                
-        return_node = self.parse_return()
-        
-        self.match(TokenType.IF_U_SAY_SO)
-        
-        return ASTNode(
-            type=ASTType.FUNCTION_DECLARATION,
-            value=ident.value,
-            children=params + statements + ([return_node] if return_node else [])
-        )
     
     def parse_func_dec(self):
         self.match(TokenType.HOW_IZ_I)
@@ -262,22 +266,9 @@ class Parser:
         self.match(TokenType.LINEBREAK)
         
         statements = []
-        return_node = None
-        
+        # GTFO and FOUND YR are now normal statements
         while self.current_token and self.current_token.type != TokenType.IF_U_SAY_SO:
-            if self.current_token.type == TokenType.FOUND_YR:
-                return_node = self.parse_return()
-                break
-            elif self.current_token.type == TokenType.GTFO:
-                # GTFO inside a function acts as a return with no value (returns NOOB)
-                self.match(TokenType.GTFO)
-                return_node = ASTNode(type=ASTType.RETURN, value=None)
-                break
-            
             statements.append(self.parse_statement())
-            self.match(TokenType.LINEBREAK)
-                
-        if self.current_token and self.current_token.type == TokenType.LINEBREAK:
             self.match(TokenType.LINEBREAK)
 
         self.match(TokenType.IF_U_SAY_SO)
@@ -286,17 +277,11 @@ class Parser:
             type=ASTType.STATEMENT_BLOCK,
             children=statements
         )
-        
-        children = [statements_node]
-        if params:
-            children = params + children
-        if return_node:
-            children.append(return_node)
             
         return ASTNode(
             type=ASTType.FUNCTION_DECLARATION,
             value=ident.value,
-            children=children
+            children=params + [statements_node]
         )
     
     def parse_params_line(self):
@@ -316,21 +301,7 @@ class Parser:
         ident = self.match(TokenType.IDENTIFIER)
         return ASTNode(
             type=ASTType.PARAMETER,
-            value=ident
-        )
-    
-    def parse_return(self):
-        if self.current_token and self.current_token.type == TokenType.GTFO:
-            return ASTNode(
-                type=ASTType.RETURN
-            )
-        self.match(TokenType.FOUND_YR)
-        expr = self.parse_expr()
-        self.match(TokenType.LINEBREAK)
-        
-        return ASTNode(
-            type=ASTType.RETURN,
-            value=expr
+            value=ident.value # dont store the whole token
         )
     
     def parse_if_else_block(self, condition_expr):
@@ -658,6 +629,8 @@ class Parser:
     #Function helper
     def parse_maek_expr(self):
         operand = self.parse_expr()
+        if self.current_token and self.current_token.type == TokenType.A: # added optional A
+            self.match(TokenType.A)
         type_token = self.match(TokenType.TYPE)
         return [
             operand,

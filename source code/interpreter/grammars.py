@@ -132,7 +132,7 @@ GRAMMAR_DEFINTIONS = {
         ["<func_section>", TokenType.LINEBREAK, "<func_dec>"]
     ],
     
-    "<func_dec>": [F
+    "<func_dec>": [
         [TokenType.HOW_IZ_I, TokenType.IDENTIFIER, "<params_line>", TokenType.LINEBREAK, "<statements>", TokenType.LINEBREAK, "<return_line>", TokenType.IF_U_SAY_SO]
     ],
     

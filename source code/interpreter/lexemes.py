@@ -48,8 +48,8 @@ lex_regex = {
     TokenType.NO_WAI: re.compile(r'NO WAI'),
     TokenType.OIC: re.compile(r'OIC'),
     TokenType.WTF: re.compile(r'WTF\?'),
-    TokenType.OMG: re.compile(r'OMG'),
     TokenType.OMGWTF: re.compile(r'OMGWTF'),
+    TokenType.OMG: re.compile(r'OMG'),
     TokenType.IM_IN_YR: re.compile(r'IM IN YR'),
     TokenType.UPPIN: re.compile(r'UPPIN'),
     TokenType.NERFIN: re.compile(r'NERFIN'),
@@ -72,5 +72,5 @@ lex_regex = {
 
     # WHITESPACE RULE
     TokenType.LINEBREAK: re.compile(r'[\n]+'),
-    TokenType.WHITESPACE: re.compile(r'[\s,]+'), 
+    TokenType.WHITESPACE: re.compile(r'[ \t,]+'), # more proper whitespace
 }
