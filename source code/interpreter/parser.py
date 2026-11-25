@@ -70,7 +70,7 @@ class Parser:
         raise SyntaxError(f"Expected {expected_type}, got {token}")
     
     def parse_program(self):
-        func_ast = self.parse_func_section()
+        pre_funcs = self.parse_func_section()
         self.match(TokenType.HAI)
         self.match(TokenType.LINEBREAK)
         
@@ -84,6 +84,22 @@ class Parser:
         )
 
         self.match(TokenType.KTHXBYE)
+        
+        if self.current_token and self.current_token.type == TokenType.LINEBREAK:
+            self.match(TokenType.LINEBREAK)
+            
+        if self.current_token and self.current_token.type != TokenType.EOF:
+            post_funcs = self.parse_func_section()
+
+            func_ast = ASTNode(
+                type=ASTType.FUNCTION_SECTION,
+                children=pre_funcs.children + post_funcs.children
+            )
+        else:
+            func_ast = ASTNode(
+                type=ASTType.FUNCTION_SECTION,
+                children=pre_funcs.children
+            )
         
         return ASTNode(
             type=ASTType.PROGRAM,
