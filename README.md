@@ -182,13 +182,27 @@ git clone https://github.com/yssenen-beep/CMSC-124-LOLCODE--LMFAO.git
 cd CMSC-124-LOLCODE--LMFAO/source\ code
 ```
 
+3. Set up python virtual environment.
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+
 3. Install the required dependencies.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-*Note: Update the installation instructions if the project uses a different dependency management method.*
+4. Install the required dependencies.
+
+```bash
+python3 main.py
+```
+
+5. Now you can run any program you want
 
 ## Running the Interpreter
 
